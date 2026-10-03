@@ -1,0 +1,96 @@
+{% extends "microbiology/base.html" %}
+
+{% block content %}
+
+<h1>Culture Records</h1>
+
+<form method="get">
+
+    <input
+        type="text"
+        name="q"
+        value="{{ query }}"
+        placeholder="Search sample, patient, organism or specimen"
+    >
+
+    <button type="submit">Search</button>
+
+</form>
+
+<hr>
+
+<table border="1" cellpadding="8">
+
+    <tr>
+        <th>Sample ID</th>
+        <th>Patient ID</th>
+        <th>Gender</th>
+        <th>Specimen</th>
+        <th>Culture Result</th>
+        <th>Organism</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for record in records %}
+
+    <tr>
+
+        <td>{{ record.sample_id }}</td>
+
+        <td>{{ record.patient_id }}</td>
+
+        <td>{{ record.patient_sex }}</td>
+
+        <td>{{ record.specimen }}</td>
+
+        <td>{{ record.culture_result }}</td>
+
+        <td>
+            {% if record.organism %}
+                {{ record.organism }}
+            {% else %}
+                -
+            {% endif %}
+        </td>
+
+        <td>
+
+            <a href="{% url 'culture_report' record.id %}">
+                Report
+            </a>
+
+            |
+
+            <a href="{% url 'edit_culture' record.id %}">
+                Edit
+            </a>
+
+            |
+
+            <a href="{% url 'delete_culture' record.id %}">
+                Delete
+            </a>
+
+        </td>
+
+    </tr>
+
+    {% empty %}
+
+    <tr>
+        <td colspan="7">
+            No records found.
+        </td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+<hr>
+
+<a href="{% url 'add_culture' %}">
+    Add Culture
+</a>
+
+{% endblock %}

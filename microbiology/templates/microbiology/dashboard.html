@@ -1,0 +1,174 @@
+{% extends "microbiology/base.html" %}
+
+{% block content %}
+
+<h1>Microbial Data Dashboard</h1>
+
+<hr>
+
+<h2>Summary</h2>
+
+<table border="1" cellpadding="10">
+
+    <tr>
+        <th>Total Samples</th>
+        <th>Positive Cultures</th>
+        <th>Negative Cultures</th>
+    </tr>
+
+    <tr>
+        <td>{{ total_samples }}</td>
+        <td>{{ positive_cultures }}</td>
+        <td>{{ negative_cultures }}</td>
+    </tr>
+
+</table>
+
+<hr>
+
+<h2>Organism Distribution</h2>
+
+<table border="1" cellpadding="8">
+
+    <tr>
+        <th>Organism</th>
+        <th>Number of Isolates</th>
+    </tr>
+
+    {% for item in organism_distribution %}
+
+    <tr>
+        <td>{{ item.organism }}</td>
+        <td>{{ item.total }}</td>
+    </tr>
+
+    {% empty %}
+
+    <tr>
+        <td colspan="2">
+            No organism data available.
+        </td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+<hr>
+
+<h2>Specimen Distribution</h2>
+
+<table border="1" cellpadding="8">
+
+    <tr>
+        <th>Specimen</th>
+        <th>Number of Specimens</th>
+    </tr>
+
+    {% for item in specimen_distribution %}
+
+    <tr>
+        <td>{{ item.specimen }}</td>
+        <td>{{ item.total }}</td>
+    </tr>
+
+    {% empty %}
+
+    <tr>
+        <td colspan="2">
+            No specimen data available.
+        </td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+<h2>Organism Distribution Chart</h2>
+
+<canvas id="organismChart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    const organismLabels = [
+        {% for item in organism_distribution %}
+            "{{ item.organism|escapejs }}",
+        {% endfor %}
+    ];
+
+    const organismData = [
+        {% for item in organism_distribution %}
+            {{ item.total }},
+        {% endfor %}
+    ];
+
+    const ctx = document.getElementById("organismChart");
+
+    new Chart(ctx, {
+        type: "bar",
+
+        data: {
+            labels: organismLabels,
+
+            datasets: [{
+                label: "Number of Isolates",
+                data: organismData
+            }]
+        },
+
+        options: {
+            responsive: true,
+
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+</script>
+
+<hr>
+
+<h2>Specimen Distribution Chart</h2>
+
+<canvas id="specimenChart"></canvas>
+
+<script>
+
+    const specimenLabels = [
+        {% for item in specimen_distribution %}
+            "{{ item.specimen|escapejs }}",
+        {% endfor %}
+    ];
+
+    const specimenData = [
+        {% for item in specimen_distribution %}
+            {{ item.total }},
+        {% endfor %}
+    ];
+
+    const specimenCtx = document.getElementById("specimenChart");
+
+    new Chart(specimenCtx, {
+        type: "pie",
+
+        data: {
+            labels: specimenLabels,
+
+            datasets: [{
+                label: "Number of Specimens",
+                data: specimenData
+            }]
+        },
+
+        options: {
+            responsive: true
+        }
+    });
+
+</script>
+{% endblock %}

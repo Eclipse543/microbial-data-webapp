@@ -1,0 +1,108 @@
+```html
+{% extends "microbiology/base.html" %}
+
+{% block content %}
+
+<h1>Culture Report</h1>
+
+<h2>Patient Information</h2>
+
+<table border="1" cellpadding="8">
+
+    <tr>
+        <th>Sample ID</th>
+        <td>{{ record.sample_id }}</td>
+    </tr>
+
+    <tr>
+        <th>Patient ID</th>
+        <td>{{ record.patient_id }}</td>
+    </tr>
+
+    <tr>
+        <th>Patient Name</th>
+        <td>
+            {% if record.patient_name %}
+                {{ record.patient_name }}
+            {% else %}
+                -
+            {% endif %}
+        </td>
+    </tr>
+
+    <tr>
+        <th>Patient Age</th>
+        <td>{{ record.patient_age }}</td>
+    </tr>
+
+    <tr>
+        <th>Patient Sex</th>
+        <td>{{ record.patient_sex }}</td>
+    </tr>
+
+    <tr>
+        <th>Specimen</th>
+        <td>{{ record.specimen }}</td>
+    </tr>
+
+    <tr>
+        <th>Collection Date</th>
+        <td>{{ record.collection_date }}</td>
+    </tr>
+
+</table>
+
+<hr>
+
+<h2>Culture Result</h2>
+
+<table border="1" cellpadding="8">
+
+    <tr>
+        <th>Culture Result</th>
+        <td>{{ record.culture_result }}</td>
+    </tr>
+
+    <tr>
+        <th>Organism</th>
+        <td>
+            {% if record.organism %}
+                {{ record.organism }}
+            {% else %}
+                -
+            {% endif %}
+        </td>
+    </tr>
+
+</table>
+
+<hr>
+
+<h2>Antimicrobial Susceptibility</h2>
+
+<table border="1" cellpadding="8">
+
+    <tr>
+        <th>Antibiotic</th>
+        <th>Result</th>
+    </tr>
+
+    {% for result in record.susceptibilities.all %}
+    <tr>
+        <td>{{ result.antibiotic }}</td>
+        <td>{{ result.susceptibility }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="2">No antibiotics recorded.</td>
+    </tr>
+    {% endfor %}
+
+</table>
+<br>
+
+<a href="{% url 'culture_list' %}">Back to Records</a>
+
+{% endblock %}
+```
+

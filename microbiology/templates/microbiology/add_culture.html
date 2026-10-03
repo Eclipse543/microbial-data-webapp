@@ -1,0 +1,279 @@
+{% extends "microbiology/base.html" %}
+
+{% block content %}
+
+<h1>Add Culture</h1>
+
+<form method="post">
+
+    {% csrf_token %}
+
+    <h2>Patient and Culture Information</h2>
+
+    {{ form.non_field_errors }}
+
+    <p>
+        {{ form.sample_id.label_tag }}
+        {{ form.sample_id }}
+        {{ form.sample_id.errors }}
+    </p>
+
+    <p>
+        {{ form.patient_id.label_tag }}
+        {{ form.patient_id }}
+        {{ form.patient_id.errors }}
+    </p>
+
+    <p>
+        {{ form.patient_name.label_tag }}
+        {{ form.patient_name }}
+        {{ form.patient_name.errors }}
+    </p>
+
+    <p>
+        {{ form.patient_age.label_tag }}
+        {{ form.patient_age }}
+        {{ form.patient_age.errors }}
+    </p>
+
+    <p>
+        {{ form.patient_sex.label_tag }}
+        {{ form.patient_sex }}
+        {{ form.patient_sex.errors }}
+    </p>
+
+    <p>
+        {{ form.specimen.label_tag }}
+        {{ form.specimen }}
+        {{ form.specimen.errors }}
+    </p>
+
+    <p>
+        {{ form.culture_result.label_tag }}
+        {{ form.culture_result }}
+        {{ form.culture_result.errors }}
+    </p>
+
+    <p>
+        {{ form.organism.label_tag }}
+        {{ form.organism }}
+        {{ form.organism.errors }}
+    </p>
+
+    <p>
+        {{ form.collection_date.label_tag }}
+        {{ form.collection_date }}
+        {{ form.collection_date.errors }}
+    </p>
+
+
+    <hr>
+
+    <h2>Antimicrobial Susceptibility</h2>
+
+    {{ formset.management_form }}
+
+    <table border="1" cellpadding="8" id="antibiotic-table">
+
+        <thead>
+
+            <tr>
+                <th>Antibiotic</th>
+                <th>Susceptibility</th>
+                <th>Remove</th>
+            </tr>
+
+        </thead>
+
+        <tbody id="antibiotic-forms">
+
+            {% for antibiotic_form in formset %}
+
+            <tr class="antibiotic-row">
+
+                <td>
+                    {{ antibiotic_form.antibiotic }}
+                    {{ antibiotic_form.antibiotic.errors }}
+                </td>
+
+                <td>
+                    {{ antibiotic_form.susceptibility }}
+                    {{ antibiotic_form.susceptibility.errors }}
+                </td>
+
+                <td>
+
+                    {% if antibiotic_form.instance.pk %}
+                        {{ antibiotic_form.DELETE }}
+                    {% else %}
+                        <button
+                            type="button"
+                            onclick="removeRow(this)"
+                        >
+                            Remove
+                        </button>
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <button
+        type="button"
+        onclick="addAntibiotic()"
+    >
+        + Add Antibiotic
+    </button>
+
+    <br>
+    <br>
+
+    <button type="submit">
+        Save Culture
+    </button>
+
+</form>
+
+
+<script>
+
+function addAntibiotic() {
+
+    const totalForms =
+        document.getElementById(
+            "id_" + "susceptibilities-TOTAL_FORMS"
+        );
+
+    const formCount = parseInt(totalForms.value);
+
+    const tableBody =
+        document.getElementById("antibiotic-forms");
+
+    const emptyRow = `
+        <tr class="antibiotic-row">
+
+            <td>
+                <select
+                    name="susceptibilities-${formCount}-antibiotic"
+                    id="id_susceptibilities-${formCount}-antibiotic"
+                >
+
+                    <option value="">---------</option>
+
+                    <option value="Gentamicin">
+                        Gentamicin
+                    </option>
+
+                    <option value="Amikacin">
+                        Amikacin
+                    </option>
+
+                    <option value="Levofloxacin">
+                        Levofloxacin
+                    </option>
+
+                    <option value="Ofloxacin">
+                        Ofloxacin
+                    </option>
+
+                    <option value="Ciprofloxacin">
+                        Ciprofloxacin
+                    </option>
+
+                    <option value="Ceftazidime">
+                        Ceftazidime
+                    </option>
+
+                    <option value="Cefepime">
+                        Cefepime
+                    </option>
+
+                    <option value="Cefotaxime">
+                        Cefotaxime
+                    </option>
+
+                    <option value="Imipenem">
+                        Imipenem
+                    </option>
+
+                    <option value="Meropenem">
+                        Meropenem
+                    </option>
+
+                    <option value="Piperacillin">
+                        Piperacillin
+                    </option>
+
+                    <option value="Piperacillin-tazobactam">
+                        Piperacillin-tazobactam
+                    </option>
+
+                    <option value="Co-trimoxazole">
+                        Co-trimoxazole
+                    </option>
+
+                    <option value="Tetracycline">
+                        Tetracycline
+                    </option>
+
+                </select>
+            </td>
+
+            <td>
+
+                <select
+                    name="susceptibilities-${formCount}-susceptibility"
+                    id="id_susceptibilities-${formCount}-susceptibility"
+                >
+
+                    <option value="">---------</option>
+                    <option value="S">S</option>
+                    <option value="I">I</option>
+                    <option value="R">R</option>
+
+                </select>
+
+            </td>
+
+            <td>
+
+                <button
+                    type="button"
+                    onclick="removeRow(this)"
+                >
+                    Remove
+                </button>
+
+            </td>
+
+        </tr>
+    `;
+
+    tableBody.insertAdjacentHTML(
+        "beforeend",
+        emptyRow
+    );
+
+    totalForms.value = formCount + 1;
+}
+
+
+function removeRow(button) {
+
+    const row = button.closest("tr");
+
+    row.remove();
+
+}
+
+</script>
+
+{% endblock %}
